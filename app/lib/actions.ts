@@ -8,35 +8,35 @@ import { AuthError } from 'next-auth';
 
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
- 
+
 const FormSchema = z.object({
   id: z.string(),
-  customerId: z.string({
-    invalid_type_error: 'Please select a customer.',
+  categoryId: z.string({
+    invalid_type_error: 'Please select a category.',
   }),
   amount: z.coerce
     .number()
     .gt(0, { message: 'Please enter an amount greater than $0.' }),
   status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an invoice status.',
+    invalid_type_error: 'Please select a transaction status.',
   }),
   date: z.string(),
 });
 
 export type State = {
   errors?: {
-    customerId?: string[];
+    categoryId?: string[];
     amount?: string[];
     status?: string[];
   };
   message?: string | null;
 };
- 
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
- 
-export async function createInvoice(prevState: State, formData: FormData) {
-   const validatedFields = CreateInvoice.safeParse({
-    customerId: formData.get('customerId'),
+
+const CreateTransaction = FormSchema.omit({ id: true, date: true });
+
+export async function createTransaction(prevState: State, formData: FormData) {
+  const validatedFields = CreateTransaction.safeParse({
+    categoryId: formData.get('categoryId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
@@ -45,78 +45,77 @@ export async function createInvoice(prevState: State, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Invoice.',
+      message: 'Missing Fields. Failed to Create Transaction.',
     };
   }
   // Pepare data for insertion into the database 
-  const { customerId, amount, status } = validatedFields.data;
- 
+  const { categoryId, amount, status } = validatedFields.data;
+
   const amountInCents = amount * 100;
   const date = new Date().toISOString().split('T')[0];
- //insert the new invoice into the database
+  //insert the new transaction into the database
   try {
     await sql`
-      INSERT INTO invoices (customer_id, amount, status, date)
-      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+      INSERT INTO transactions (category_id, amount, status, date)
+      VALUES (${categoryId}, ${amountInCents}, ${status}, ${date})
     `;
   } catch (error) {
     console.error(error);
     return {
-      message: 'Database Error: Failed to Create Invoice.',
+      message: 'Database Error: Failed to Create Transaction.',
     };
   }
 
-// Revalidate the cache for the invoices page and redirect the user
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  // Revalidate the cache for the transactions page and redirect the user
+  revalidatePath('/dashboard/transactions');
+  redirect('/dashboard/transactions');
 }
 
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
- 
- 
-export async function updateInvoice(
+const UpdateTransaction = FormSchema.omit({ id: true, date: true });
+
+
+export async function updateTransaction(
   id: string,
   prevState: State,
   formData: FormData,
 ) {
-  const validatedFields = UpdateInvoice.safeParse({
-    customerId: formData.get('customerId'),
+  const validatedFields = UpdateTransaction.safeParse({
+    categoryId: formData.get('categoryId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
- 
+
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Invoice.',
+      message: 'Missing Fields. Failed to Update Transaction.',
     };
   }
- 
-  const { customerId, amount, status } = validatedFields.data;
+
+  const { categoryId, amount, status } = validatedFields.data;
   const amountInCents = amount * 100;
- 
+
   try {
     await sql`
-      UPDATE invoices
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      UPDATE transactions
+      SET category_id = ${categoryId}, amount = ${amountInCents}, status = ${status}
       WHERE id = ${id}
     `;
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Invoice.' };
+    return { message: 'Database Error: Failed to Update Transaction.' };
   }
- 
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+
+  revalidatePath('/dashboard/transactions');
+  redirect('/dashboard/transactions');
 }
 
-export async function deleteInvoice(id: string): Promise<void> {
+export async function deleteTransaction(id: string): Promise<void> {
   try {
-    await sql`DELETE FROM invoices WHERE id = ${id}`;
+    await sql`DELETE FROM transactions WHERE id = ${id}`;
   } catch (error) {
     console.error(error);
-    // Optionally, you could log or handle the error here, but do not return anything
   }
-  revalidatePath('/dashboard/invoices');
+  revalidatePath('/dashboard/transactions');
 }
 
 

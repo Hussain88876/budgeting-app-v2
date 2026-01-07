@@ -7,7 +7,6 @@ import {
   BanknotesIcon,
   ChartPieIcon,
 } from '@heroicons/react/24/outline';
-
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -18,14 +17,15 @@ const links = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   {
     name: 'Transactions',
-    href: '/dashboard/invoices',
+    href: '/dashboard/transactions',
     icon: BanknotesIcon,
   },
-  { name: 'Budgets', href: '/dashboard/customers', icon: ChartPieIcon },
+  { name: 'Budgets', href: '/dashboard/budgets', icon: ChartPieIcon }, // Keeping Budgets link for now as requested, though logic excluded.
 ];
 
 export default function NavLinks() {
   const pathname = usePathname();
+
   return (
     <>
       {links.map((link) => {
