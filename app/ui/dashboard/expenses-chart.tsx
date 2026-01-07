@@ -19,16 +19,21 @@ export default async function ExpensesChart() {
     // Calculate total for percentages
     const total = expenses.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
-    // Generate conic gradient segments
-    let currentAngle = 0;
-    const segments = expenses.map((expense) => {
-        const percentage = (Number(expense.amount) / total) * 100;
-        const angle = (percentage / 100) * 360;
-        const color = expense.fill; // Use dynamic fill from backend
-        const segmentParams = `${color} ${currentAngle}deg ${currentAngle + angle}deg`;
-        currentAngle += angle;
-        return segmentParams;
-    });
+    // Generate conic gradient segments using reduce to avoid mutation
+    const { segments } = expenses.reduce(
+        (acc, expense) => {
+            const percentage = (Number(expense.amount) / total) * 100;
+            const angle = (percentage / 100) * 360;
+            const color = expense.fill;
+            const segmentParams = `${color} ${acc.currentAngle}deg ${acc.currentAngle + angle}deg`;
+
+            return {
+                segments: [...acc.segments, segmentParams],
+                currentAngle: acc.currentAngle + angle,
+            };
+        },
+        { segments: [] as string[], currentAngle: 0 }
+    );
 
     const gradient = `conic-gradient(${segments.join(', ')})`;
 
