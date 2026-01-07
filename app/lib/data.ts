@@ -22,12 +22,14 @@ export async function fetchRevenue() {
   }
 }
 
-export async function fetchRecentTransactions() {
+export async function fetchRecentTransactions(month: string, year: string) {
   try {
     const data = await sql<RecentTransactionRaw>`
       SELECT transactions.amount, categories.name, categories.image_url, transactions.id
       FROM transactions
       JOIN categories ON transactions.category_id = categories.id
+      WHERE to_char(transactions.date, 'MM') = ${month}
+        AND to_char(transactions.date, 'YYYY') = ${year}
       ORDER BY transactions.date DESC
       LIMIT 5`;
 
@@ -42,16 +44,21 @@ export async function fetchRecentTransactions() {
   }
 }
 
-export async function fetchCardData() {
+export async function fetchCardData(month: string, year: string) {
   try {
-    // 1. Total Transactions Count
-    const transactionCountPromise = sql`SELECT COUNT(*) FROM transactions`;
+    // 1. Total Transactions Count for the selected month
+    const transactionCountPromise = sql`
+      SELECT COUNT(*) FROM transactions
+      WHERE to_char(date, 'MM') = ${month}
+        AND to_char(date, 'YYYY') = ${year}
+    `;
 
-    // 2. Total Monthly Income (Sum of income for current month - simplified to all time for demo or use date filter)
-    // For now, let's just sum ALL income to make it easy to see, or we could filter by date.
-    // User requested "Monthly", let's assume we show total for now or last 30 days.
-    // Let's do ALL TIME for simplicity in this step, or standard sum.
-    const incomePromise = sql`SELECT SUM(amount) FROM income`;
+    // 2. Total Monthly Income (Sum of income for the selected month)
+    const incomePromise = sql`
+      SELECT SUM(amount) FROM income
+      WHERE to_char(date, 'MM') = ${month}
+        AND to_char(date, 'YYYY') = ${year}
+    `;
 
     const data = await Promise.all([
       transactionCountPromise,
@@ -164,15 +171,17 @@ export async function fetchCategories() {
   }
 }
 
-export async function fetchExpensesByCategory() {
+export async function fetchExpensesByCategory(month: string, year: string) {
   try {
-    // Sum amounts by category
+    // Sum amounts by category for the selected month
     const data = await sql<ExpensesByCategory>`
       SELECT
         categories.name as category,
         SUM(transactions.amount) as amount
       FROM transactions
       JOIN categories ON transactions.category_id = categories.id
+      WHERE to_char(transactions.date, 'MM') = ${month}
+        AND to_char(transactions.date, 'YYYY') = ${year}
       GROUP BY categories.name
     `;
 

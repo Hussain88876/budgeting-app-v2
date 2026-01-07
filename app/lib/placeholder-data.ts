@@ -36,49 +36,90 @@ const categories = [
 ];
 
 const transactions = [
+  // January 2026
   {
-    category_id: categories[0].id,
-    amount: 150000, // 1500.00
-    date: '2024-01-05',
+    category_id: categories[0].id, // Housing
+    amount: 150000,
+    date: '2026-01-05',
   },
   {
-    category_id: categories[1].id,
-    amount: 25000, // 250.00
-    date: '2024-01-06',
+    category_id: categories[1].id, // Food
+    amount: 30000,
+    date: '2026-01-10',
   },
   {
-    category_id: categories[2].id,
-    amount: 12050, // 120.50
-    date: '2024-01-07',
-  },
-  {
-    category_id: categories[3].id,
-    amount: 8000, // 80.00
-    date: '2024-01-07',
-  },
-  {
-    category_id: categories[1].id,
+    category_id: categories[3].id, // Entertainment
     amount: 5000,
-    date: '2024-02-05',
+    date: '2026-01-15',
+  },
+  // December 2025
+  {
+    category_id: categories[0].id, // Housing
+    amount: 150000,
+    date: '2025-12-05',
   },
   {
-    category_id: categories[4].id,
-    amount: 12000,
-    date: '2024-02-06',
+    category_id: categories[1].id, // Food
+    amount: 45000, // Higher food cost in Dec
+    date: '2025-12-20',
+  },
+  {
+    category_id: categories[2].id, // Transportation
+    amount: 10000,
+    date: '2025-12-22',
+  },
+  {
+    category_id: categories[3].id, // Entertainment
+    amount: 20000, // Holiday entertainment
+    date: '2025-12-24',
+  },
+  // November 2025
+  {
+    category_id: categories[0].id, // Housing
+    amount: 150000,
+    date: '2025-11-05',
+  },
+  {
+    category_id: categories[1].id, // Food
+    amount: 28000,
+    date: '2025-11-12',
+  },
+  {
+    category_id: categories[4].id, // Health
+    amount: 15000,
+    date: '2025-11-18',
   },
 ];
 
 const income = [
+  // January 2026
   {
     source: 'Salary',
-    amount: 500000, // 5000.00
-    date: '2024-01-01',
+    amount: 500000,
+    date: '2026-01-01',
+  },
+  // December 2025
+  {
+    source: 'Salary',
+    amount: 500000,
+    date: '2025-12-01',
+  },
+  {
+    source: 'Bonus',
+    amount: 100000, // Year end bonus
+    date: '2025-12-15',
+  },
+  // November 2025
+  {
+    source: 'Salary',
+    amount: 500000,
+    date: '2025-11-01',
   },
   {
     source: 'Freelance',
-    amount: 80000, // 800.00
-    date: '2024-01-15',
-  }
+    amount: 50000,
+    date: '2025-11-20',
+  },
 ];
 
 const revenue = [

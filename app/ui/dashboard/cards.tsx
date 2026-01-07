@@ -16,18 +16,24 @@ const iconMap = {
   income: CurrencyDollarIcon, // New icon for Income
 };
 
-export default async function CardWrapper() {
+export default async function CardWrapper({
+  month,
+  year,
+}: {
+  month: string;
+  year: string;
+}) {
   const {
     numberOfTransactions,
     totalMonthlyIncome, // New data
-  } = await fetchCardData();
+  } = await fetchCardData(month, year);
 
   return (
     <>
       {/* NOTE: comment in this code when you get to this point in the course */}
 
       <Card title="Monthly Income" value={totalMonthlyIncome} type="income" />
-      <Card title="Total Transactions" value={numberOfTransactions} type="invoices" />
+      <Card title="Transactions This Month" value={numberOfTransactions} type="invoices" />
       {/* Removed Pending and Active Budgets cards as requested */}
     </>
   );

@@ -9,8 +9,20 @@ import { fetchExpensesByCategory } from '@/app/lib/data';
 // https://www.chartjs.org/
 // https://airbnb.io/visx/
 
-export default async function ExpensesChart() {
-    const expenses = await fetchExpensesByCategory();
+export default async function ExpensesChart({
+    month,
+    year,
+}: {
+    month: string;
+    year: string;
+}) {
+    const expenses = await fetchExpensesByCategory(month, year);
+
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    const monthName = monthNames[parseInt(month) - 1];
 
     if (!expenses || expenses.length === 0) {
         return <p className="mt-4 text-gray-400">No data available.</p>;
@@ -40,7 +52,7 @@ export default async function ExpensesChart() {
     return (
         <div className="w-full md:col-span-4">
             <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-                Expenses Breakdown
+                Expenses Breakdown ({monthName} {year})
             </h2>
             <div className="rounded-xl bg-gray-50 p-4">
                 <div className="flex flex-col items-center justify-center rounded-md bg-white p-8">

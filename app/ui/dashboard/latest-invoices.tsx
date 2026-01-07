@@ -4,13 +4,25 @@ import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
 import { fetchRecentTransactions } from '@/app/lib/data';
 
-export default async function RecentTransactions() {
-  const recentTransactions = await fetchRecentTransactions();
+export default async function RecentTransactions({
+  month,
+  year,
+}: {
+  month: string;
+  year: string;
+}) {
+  const recentTransactions = await fetchRecentTransactions(month, year);
+
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  const monthName = monthNames[parseInt(month) - 1];
 
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Recent Transactions
+        Recent Transactions ({monthName} {year})
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
         {/* NOTE: comment in this code when you get to this point in the course */}
@@ -43,9 +55,6 @@ export default async function RecentTransactions() {
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold md:text-base">
                       {transaction.name}
-                    </p>
-                    <p className="hidden text-sm text-gray-500 sm:block">
-                      {transaction.email}
                     </p>
                   </div>
                 </div>
