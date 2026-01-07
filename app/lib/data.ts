@@ -12,9 +12,9 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 
-export async function fetchRevenue() {
+export async function fetchRevenue(): Promise<Revenue[]> {
   try {
-    const data = await sql<Revenue[]>`SELECT * FROM revenue`;
+    const data = await sql<Revenue>`SELECT * FROM revenue`;
     return data.rows;
   } catch (error) {
     console.error('Database Error:', error);
