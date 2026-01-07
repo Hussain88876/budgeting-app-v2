@@ -6,11 +6,15 @@ import { UpdateTransaction, DeleteTransaction } from '@/app/ui/transactions/butt
 export default async function TransactionsTable({
   query,
   currentPage,
+  month,
+  year,
 }: {
   query: string;
   currentPage: number;
+  month: string;
+  year: string;
 }) {
-  const transactions = await fetchFilteredTransactions(query, currentPage);
+  const transactions = await fetchFilteredTransactions(query, currentPage, month, year);
 
   return (
     <div className="mt-6 flow-root">

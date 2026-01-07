@@ -3,26 +3,34 @@ import Search from '@/app/ui/search';
 import Table from '@/app/ui/transactions/table';
 import { CreateTransaction } from '@/app/ui/transactions/buttons';
 import { lusitana } from '@/app/ui/fonts';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons'; // Rename? Skeletons likely shared or named Invoices. Keeping for now until I check ui/skeletons.tsx
+import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchTransactionsPages } from '@/app/lib/data';
+import MonthSelector from '@/app/ui/dashboard/month-selector';
 
 export default async function Page(props: {
   searchParams?: Promise<{
     query?: string;
     page?: string;
+    month?: string;
+    year?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
+  const month = searchParams?.month || '01';
+  const year = searchParams?.year || '2026';
 
-  const totalPages = await fetchTransactionsPages(query);
+  const totalPages = await fetchTransactionsPages(query, month, year);
 
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
         <h1 className={`${lusitana.className} text-2xl`}>Transactions</h1>
+        <Suspense fallback={<div>Loading...</div>}>
+          <MonthSelector />
+        </Suspense>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Suspense fallback={<div>Loading...</div>}>
@@ -30,8 +38,8 @@ export default async function Page(props: {
         </Suspense>
         <CreateTransaction />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
+      <Suspense key={query + currentPage + month + year} fallback={<InvoicesTableSkeleton />}>
+        <Table query={query} currentPage={currentPage} month={month} year={year} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Suspense fallback={<div>Loading...</div>}>

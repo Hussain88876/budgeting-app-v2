@@ -82,6 +82,8 @@ const ITEMS_per_PAGE = 6;
 export async function fetchFilteredTransactions(
   query: string,
   currentPage: number,
+  month: string,
+  year: string,
 ) {
   const offset = (currentPage - 1) * ITEMS_per_PAGE;
 
@@ -96,9 +98,13 @@ export async function fetchFilteredTransactions(
       FROM transactions
       JOIN categories ON transactions.category_id = categories.id
       WHERE
-        categories.name ILIKE ${`%${query}%`} OR
-        transactions.date::text ILIKE ${`%${query}%`} OR
-        transactions.amount::text ILIKE ${`%${query}%`}
+        (
+          categories.name ILIKE ${`%${query}%`} OR
+          transactions.date::text ILIKE ${`%${query}%`} OR
+          transactions.amount::text ILIKE ${`%${query}%`}
+        )
+        AND to_char(transactions.date, 'MM') = ${month}
+        AND to_char(transactions.date, 'YYYY') = ${year}
       ORDER BY transactions.date DESC
       LIMIT ${ITEMS_per_PAGE} OFFSET ${offset}
     `;
@@ -110,15 +116,23 @@ export async function fetchFilteredTransactions(
   }
 }
 
-export async function fetchTransactionsPages(query: string) {
+export async function fetchTransactionsPages(
+  query: string,
+  month: string,
+  year: string,
+) {
   try {
     const count = await sql`SELECT COUNT(*)
     FROM transactions
     JOIN categories ON transactions.category_id = categories.id
     WHERE
-      categories.name ILIKE ${`%${query}%`} OR
-      transactions.date::text ILIKE ${`%${query}%`} OR
-      transactions.amount::text ILIKE ${`%${query}%`}
+      (
+        categories.name ILIKE ${`%${query}%`} OR
+        transactions.date::text ILIKE ${`%${query}%`} OR
+        transactions.amount::text ILIKE ${`%${query}%`}
+      )
+      AND to_char(transactions.date, 'MM') = ${month}
+      AND to_char(transactions.date, 'YYYY') = ${year}
   `;
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_per_PAGE);
