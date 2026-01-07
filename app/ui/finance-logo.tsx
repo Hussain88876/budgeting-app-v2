@@ -6,8 +6,8 @@ export default function FinanceLogo() {
     <div
       className={`${lusitana.className} flex flex-row items-center leading-none text-white`}
     >
-      <BanknotesIcon className="h-12 w-12 rotate-[15deg]" />
-      <p className="text-[44px] ml-2">FinanceFlow</p>
+      <BanknotesIcon className="h-8 w-8 rotate-[15deg]" />
+      <p className="text-[24px] ml-2">FinanceFlow</p>
     </div>
   );
 }
