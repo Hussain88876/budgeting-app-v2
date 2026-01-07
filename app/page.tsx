@@ -13,9 +13,8 @@ export default function Page() {
       <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
         <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Welcome to FinanceFlow.</strong>
-          </p>
-          <div className="text-gray-600">
+            <strong>Welcome to FinanceFlow.</strong> Track your spending, manage categories, and stay on top of your finances.
+          </p><div className="text-gray-600">
             <p className="mb-4">
               <strong>Interactive Demo & Portfolio Video</strong>
             </p>
@@ -30,7 +29,7 @@ export default function Page() {
                 <strong>Tech Stack:</strong> Built with <strong>Next.js</strong> and <strong>TypeScript</strong> to highlight type safety, performance, and modern web development practices.
               </li>
               <li>
-                <strong>Context:</strong> Created as a "playground" project to experiment with TDD and new features, serving as a live example of my technical capabilities.
+                <strong>Context:</strong> Created as a &apos;playground&apos; project to experiment with TDD and new features, serving as a live example of my technical capabilities.
               </li>
             </ul>
           </div>
