@@ -34,7 +34,6 @@ export type RecentTransactionRaw = {
   amount: number;
   name: string;
   image_url: string;
-  email: string;
   id: string;
 };
 
@@ -42,7 +41,6 @@ export type RecentTransaction = {
   id: string;
   name: string;
   image_url: string;
-  email: string;
   amount: string;
 };
 
@@ -69,15 +67,6 @@ export type CategoryField = {
 };
 
 export type TransactionForm = {
-  id: string;
-  category_id: string;
-  amount: number;
-  status: 'pending' | 'paid'; // Keeping temporarily to avoid break in edit form before I update it, but plan is to remove. 
-  // Wait, if I remove it from DB, I should remove it here.
-  // actually, let's remove it. I will fix the form in the same 'Turn' or subsequent steps.
-};
-// Redefining TransactionForm to NOT have status
-export type TransactionFormClean = {
   id: string;
   category_id: string;
   amount: number;

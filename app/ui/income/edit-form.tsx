@@ -2,14 +2,14 @@
 
 import { Income } from '@/app/lib/definitions';
 import { Button } from '@/app/ui/button';
-import { updateIncome } from '@/app/lib/actions';
+import { updateIncome, IncomeState } from '@/app/lib/actions';
 import Link from 'next/link';
 import { useActionState } from 'react';
 
 export default function EditIncomeForm({ income }: { income: Income }) {
-    const initialState = { message: null, errors: {} };
+    const initialState: IncomeState = { message: null, errors: {} };
     const updateIncomeWithId = updateIncome.bind(null, income.id);
-    const [state, dispatch] = useActionState(updateIncomeWithId as any, initialState);
+    const [state, dispatch] = useActionState(updateIncomeWithId, initialState);
 
     return (
         <form action={dispatch}>
@@ -26,8 +26,16 @@ export default function EditIncomeForm({ income }: { income: Income }) {
                         defaultValue={income.source}
                         placeholder="e.g. Salary"
                         className="peer block w-full rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500"
-                        required
+                        aria-describedby="source-error"
                     />
+                    <div id="source-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.source &&
+                            state.errors.source.map((error: string) => (
+                                <p key={error} className="mt-2 text-sm text-red-500">
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
                 </div>
 
                 {/* Amount */}
@@ -40,11 +48,19 @@ export default function EditIncomeForm({ income }: { income: Income }) {
                         name="amount"
                         type="number"
                         step="0.01"
-                        defaultValue={income.amount / 100} // Convert cents to dollars for display
+                        defaultValue={income.amount / 100}
                         placeholder="0.00"
                         className="peer block w-full rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500"
-                        required
+                        aria-describedby="amount-error"
                     />
+                    <div id="amount-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.amount &&
+                            state.errors.amount.map((error: string) => (
+                                <p key={error} className="mt-2 text-sm text-red-500">
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
                 </div>
 
             </div>

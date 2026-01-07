@@ -33,7 +33,6 @@ export async function fetchRecentTransactions() {
 
     const recentTransactions = data.rows.map((transaction) => ({
       ...transaction,
-      email: 'Category', // Placeholder since we removed email from join for display
       amount: formatCurrency(transaction.amount),
     }));
     return recentTransactions;

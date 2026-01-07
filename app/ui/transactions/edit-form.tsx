@@ -10,7 +10,7 @@ import { Button } from '@/app/ui/button';
 import { updateTransaction, State } from '@/app/lib/actions';
 import { useActionState } from 'react';
 
-export default function EditInvoiceForm({
+export default function EditTransactionForm({
   transaction,
   categories,
 }: {

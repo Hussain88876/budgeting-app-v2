@@ -116,55 +116,86 @@ export async function deleteTransaction(id: string): Promise<void> {
 // INCOME ACTIONS
 const IncomeSchema = z.object({
   id: z.string(),
-  source: z.string().min(1, 'Source is required'),
-  amount: z.coerce.number().gt(0, 'Amount must be greater than 0'),
+  source: z.string().min(1, { message: 'Please enter a source.' }),
+  amount: z.coerce
+    .number()
+    .gt(0, { message: 'Please enter an amount greater than $0.' }),
 });
+
+export type IncomeState = {
+  errors?: {
+    source?: string[];
+    amount?: string[];
+  };
+  message?: string | null;
+};
+
 const CreateIncome = IncomeSchema.omit({ id: true });
 
-export async function createIncome(prevState: any, formData: FormData) {
-  // Simplified action for adding income
-  const { source, amount } = CreateIncome.parse({
+export async function createIncome(prevState: IncomeState, formData: FormData) {
+  const validatedFields = CreateIncome.safeParse({
     source: formData.get('source'),
     amount: formData.get('amount'),
   });
 
-  // Convert to cents
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Income.',
+    };
+  }
+
+  const { source, amount } = validatedFields.data;
   const amountInCents = amount * 100;
   const date = new Date().toISOString().split('T')[0];
 
   try {
     await sql`
-            INSERT INTO income (source, amount, date)
-            VALUES (${source}, ${amountInCents}, ${date})
-        `;
+      INSERT INTO income (source, amount, date)
+      VALUES (${source}, ${amountInCents}, ${date})
+    `;
   } catch (err) {
     console.error(err);
-    return { message: 'Failed to create income' };
+    return {
+      message: 'Database Error: Failed to Create Income.',
+    };
   }
 
   revalidatePath('/dashboard/income');
-  revalidatePath('/dashboard'); // Update dashboard total
-  return { message: 'Success', errors: {} };
+  revalidatePath('/dashboard');
+  redirect('/dashboard/income');
 }
 
 
-export async function updateIncome(id: string, prevState: any, formData: FormData) {
-  const { source, amount } = CreateIncome.parse({
+export async function updateIncome(
+  id: string,
+  prevState: IncomeState,
+  formData: FormData,
+) {
+  const validatedFields = CreateIncome.safeParse({
     source: formData.get('source'),
     amount: formData.get('amount'),
   });
 
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Income.',
+    };
+  }
+
+  const { source, amount } = validatedFields.data;
   const amountInCents = amount * 100;
 
   try {
     await sql`
-            UPDATE income
-            SET source = ${source}, amount = ${amountInCents}
-            WHERE id = ${id}
-        `;
+      UPDATE income
+      SET source = ${source}, amount = ${amountInCents}
+      WHERE id = ${id}
+    `;
   } catch (err) {
     console.error(err);
-    return { message: 'Failed to update income' };
+    return { message: 'Database Error: Failed to Update Income.' };
   }
 
   revalidatePath('/dashboard/income');

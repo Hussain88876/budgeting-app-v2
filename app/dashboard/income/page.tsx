@@ -1,11 +1,8 @@
 import { lusitana } from '@/app/ui/fonts';
 import { fetchIncome } from '@/app/lib/data';
 import { formatCurrency } from '@/app/lib/utils';
-import { deleteIncome } from '@/app/lib/actions';
-import { Button } from '@/app/ui/button';
-import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline'; // Importing generic TrashIcon as reusing buttons might be specific.
-import Link from 'next/link';
 import CreateIncomeForm from '@/app/ui/income/create-form';
+import { UpdateIncome, DeleteIncome } from '@/app/ui/income/buttons';
 
 export default async function Page() {
     const income_list = await fetchIncome();
@@ -24,7 +21,7 @@ export default async function Page() {
 
                 {/* Income List */}
                 <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-                    <h2 className="mb-4 text-xl font-medium">Your Monthly Inncome</h2>
+                    <h2 className="mb-4 text-xl font-medium">Your Monthly Income</h2>
                     {income_list.length === 0 ? (
                         <p className="text-gray-500">No income sources added yet.</p>
                     ) : (
@@ -38,14 +35,8 @@ export default async function Page() {
                                     <div className="flex items-center gap-4">
                                         <p className="font-medium text-green-600">{formatCurrency(inc.amount)}</p>
                                         <div className="flex gap-2">
-                                            <Link href={`/dashboard/income/${inc.id}/edit`} className="rounded-md border p-1 hover:bg-gray-200">
-                                                <PencilIcon className="w-4 h-4 text-gray-500" />
-                                            </Link>
-                                            <form action={deleteIncome.bind(null, inc.id)}>
-                                                <button className="rounded-md border p-1 hover:bg-gray-200">
-                                                    <TrashIcon className="w-4 h-4 text-gray-500" />
-                                                </button>
-                                            </form>
+                                            <UpdateIncome id={inc.id} />
+                                            <DeleteIncome id={inc.id} />
                                         </div>
                                     </div>
                                 </div>
