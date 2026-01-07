@@ -24,7 +24,7 @@ export default async function ExpensesChart() {
     const segments = expenses.map((expense) => {
         const percentage = (Number(expense.amount) / total) * 100;
         const angle = (percentage / 100) * 360;
-        const color = getColorForCategory(expense.category); // Helper function
+        const color = expense.fill; // Use dynamic fill from backend
         const segmentParams = `${color} ${currentAngle}deg ${currentAngle + angle}deg`;
         currentAngle += angle;
         return segmentParams;
@@ -50,7 +50,7 @@ export default async function ExpensesChart() {
                     <div className="mt-6 flex flex-wrap justify-center gap-4">
                         {expenses.map(exp => (
                             <div key={exp.category} className="flex items-center gap-2">
-                                <div className={`w-3 h-3 rounded-full`} style={{ background: getColorForCategory(exp.category) }}></div>
+                                <div className={`w-3 h-3 rounded-full`} style={{ background: exp.fill }}></div>
                                 <span className="text-sm text-gray-600">{exp.category} ({Math.round((Number(exp.amount) / total) * 100)}%)</span>
                             </div>
                         ))}
@@ -59,15 +59,4 @@ export default async function ExpensesChart() {
             </div>
         </div>
     );
-}
-
-function getColorForCategory(category: string) {
-    switch (category) {
-        case 'Saving': return '#10B981'; // Emerald
-        case 'Entertainment': return '#F59E0B'; // Amber
-        case 'Daily': return '#3B82F6'; // Blue
-        case 'Housing': return '#EF4444'; // Red
-        case 'Transport': return '#8B5CF6'; // Violet
-        default: return '#6B7280'; // Gray
-    }
 }

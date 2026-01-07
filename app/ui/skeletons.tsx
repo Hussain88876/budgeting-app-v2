@@ -23,8 +23,7 @@ export function CardsSkeleton() {
     <>
       <CardSkeleton />
       <CardSkeleton />
-      <CardSkeleton />
-      <CardSkeleton />
+      {/* Reduced from 4 to 2, as we only have 2 cards now */}
     </>
   );
 }
@@ -91,8 +90,6 @@ export default function DashboardSkeleton() {
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <CardSkeleton />
         <CardSkeleton />
-        <CardSkeleton />
-        <CardSkeleton />
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <RevenueChartSkeleton />
@@ -105,26 +102,17 @@ export default function DashboardSkeleton() {
 export function TableRowSkeleton() {
   return (
     <tr className="w-full border-b border-gray-100 last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
-      {/* Customer Name and Image */}
+      {/* Category */}
       <td className="relative overflow-hidden whitespace-nowrap py-3 pl-6 pr-3">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-gray-100"></div>
           <div className="h-6 w-24 rounded bg-gray-100"></div>
         </div>
-      </td>
-      {/* Email */}
-      <td className="whitespace-nowrap px-3 py-3">
-        <div className="h-6 w-32 rounded bg-gray-100"></div>
-      </td>
-      {/* Amount */}
-      <td className="whitespace-nowrap px-3 py-3">
-        <div className="h-6 w-16 rounded bg-gray-100"></div>
       </td>
       {/* Date */}
       <td className="whitespace-nowrap px-3 py-3">
         <div className="h-6 w-16 rounded bg-gray-100"></div>
       </td>
-      {/* Status */}
+      {/* Amount */}
       <td className="whitespace-nowrap px-3 py-3">
         <div className="h-6 w-16 rounded bg-gray-100"></div>
       </td>
@@ -144,7 +132,6 @@ export function InvoicesMobileSkeleton() {
     <div className="mb-2 w-full rounded-md bg-white p-4">
       <div className="flex items-center justify-between border-b border-gray-100 pb-8">
         <div className="flex items-center">
-          <div className="mr-2 h-8 w-8 rounded-full bg-gray-100"></div>
           <div className="h-6 w-16 rounded bg-gray-100"></div>
         </div>
         <div className="h-6 w-16 rounded bg-gray-100"></div>
@@ -180,19 +167,13 @@ export function InvoicesTableSkeleton() {
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Email
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
+                  Category
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Date
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Status
+                  Amount
                 </th>
                 <th
                   scope="col"

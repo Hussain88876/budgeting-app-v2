@@ -20,7 +20,7 @@ const links = [
     href: '/dashboard/transactions',
     icon: BanknotesIcon,
   },
-  { name: 'Budgets', href: '/dashboard/budgets', icon: ChartPieIcon }, // Keeping Budgets link for now as requested, though logic excluded.
+  { name: 'Income Info', href: '/dashboard/income', icon: BanknotesIcon }, // Updated icon/name
 ];
 
 export default function NavLinks() {

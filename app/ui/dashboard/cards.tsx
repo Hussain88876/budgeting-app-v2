@@ -3,6 +3,7 @@ import {
   ClockIcon,
   UserGroupIcon,
   InboxIcon,
+  CurrencyDollarIcon,
 } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 import { fetchCardData } from '@/app/lib/data';
@@ -12,28 +13,22 @@ const iconMap = {
   customers: UserGroupIcon,
   pending: ClockIcon,
   invoices: InboxIcon,
+  income: CurrencyDollarIcon, // New icon for Income
 };
 
 export default async function CardWrapper() {
   const {
-    numberOfInvoices, // numberOfTransactions
-    numberOfCustomers, // activeBudgets
-    totalPaidInvoices, // Income
-    totalPendingInvoices, // Pending
+    numberOfTransactions,
+    totalMonthlyIncome, // New data
   } = await fetchCardData();
 
   return (
     <>
       {/* NOTE: comment in this code when you get to this point in the course */}
 
-      <Card title="Income" value={totalPaidInvoices} type="collected" />
-      <Card title="Pending" value={totalPendingInvoices} type="pending" />
-      <Card title="Total Transactions" value={numberOfInvoices} type="invoices" />
-      <Card
-        title="Active Budgets"
-        value={numberOfCustomers}
-        type="customers"
-      />
+      <Card title="Monthly Income" value={totalMonthlyIncome} type="income" />
+      <Card title="Total Transactions" value={numberOfTransactions} type="invoices" />
+      {/* Removed Pending and Active Budgets cards as requested */}
     </>
   );
 }
@@ -45,7 +40,7 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: 'invoices' | 'customers' | 'pending' | 'collected';
+  type: 'invoices' | 'customers' | 'pending' | 'collected' | 'income';
 }) {
   const Icon = iconMap[type];
 
@@ -61,6 +56,8 @@ export function Card({
       >
         {value}
       </p>
+      {/* Visual indicator for Monthly if type is income */}
+      {type === 'income' && <p className="text-xs text-gray-500 text-center mt-1">Total for this month</p>}
     </div>
   );
 }

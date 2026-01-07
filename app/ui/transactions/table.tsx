@@ -1,15 +1,7 @@
 import Image from 'next/image';
-
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredTransactions } from '@/app/lib/data';
-
-// Note: Imports still point to @/app/ui/invoices... I should assume I renamed the FILES but the BUTTONS component might still be named 'UpdateInvoice' exported.
-// I should update buttons.tsx to 'UpdateTransaction'. For now, I'll update the table assuming I'll fix imports.
-// Actually, I moved the DIRECTORY. So `app/ui/invoices` IS `app/ui/transactions`.
-// So import from `@/app/ui/transactions/buttons`.
-
 import { UpdateTransaction, DeleteTransaction } from '@/app/ui/transactions/buttons';
-import TransactionStatus from '@/app/ui/transactions/status';
 
 export default async function TransactionsTable({
   query,
@@ -37,7 +29,7 @@ export default async function TransactionsTable({
                     </div>
                     <p className="text-sm text-gray-500">{transaction.category_name}</p>
                   </div>
-                  <TransactionStatus status={transaction.status} />
+                  {/* Status Removed */}
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
@@ -66,9 +58,7 @@ export default async function TransactionsTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Amount
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
-                </th>
+                {/* Status Column Removed */}
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
                 </th>
@@ -91,9 +81,7 @@ export default async function TransactionsTable({
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(transaction.amount)}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <TransactionStatus status={transaction.status} />
-                  </td>
+                  {/* Status Cell Removed */}
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <UpdateTransaction id={transaction.id} />

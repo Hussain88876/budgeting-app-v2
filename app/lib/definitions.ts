@@ -1,7 +1,3 @@
-// This file contains type definitions for your data.
-// It describes the shape of the data, and what data type each property should accept.
-// For simplicity of teaching, we're manually defining these types.
-// However, these types are generated automatically if you're using an ORM such as Prisma.
 export type User = {
   id: string;
   name: string;
@@ -12,6 +8,7 @@ export type User = {
 export type Category = {
   id: string;
   name: string;
+  image_url: string;
 };
 
 export type Transaction = {
@@ -19,41 +16,51 @@ export type Transaction = {
   category_id: string;
   amount: number;
   date: string;
-  // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
-  status: 'pending' | 'paid';
+};
+
+export type Income = {
+  id: string;
+  source: string;
+  amount: number;
+  date: string;
 };
 
 export type Revenue = {
   month: string;
   revenue: number;
+}; // Keeping for now as legacy, but might replace with Income later if needed.
+
+export type RecentTransactionRaw = {
+  amount: number;
+  name: string;
+  image_url: string;
+  email: string;
+  id: string;
 };
 
-export type LatestTransaction = {
+export type RecentTransaction = {
   id: string;
-  name: string; // Category Name
+  name: string;
+  image_url: string;
+  email: string;
   amount: string;
-  email?: string; // Optional/Deprecated
-  image_url?: string; // Optional/Deprecated
-};
-
-// The database returns a number for amount, but we later format it to a string with the formatCurrency function
-export type LatestTransactionRaw = Omit<LatestTransaction, 'amount'> & {
-  amount: number;
-};
-
-export type TransactionsTable = {
-  id: string;
-  category_id: string;
-  category_name: string; // Was name
-  date: string;
-  amount: number;
-  status: 'pending' | 'paid';
 };
 
 export type ExpensesByCategory = {
   category: string;
   amount: number;
+  fill: string;
+};
+
+export type TransactionsTableType = {
+  id: string;
+  category_id: string;
+  name: string;
+  email: string; // Legacy field from join, can be category name
+  image_url: string;
+  date: string;
+  amount: number;
+  category_name: string; // Explicitly adding this for clarity
 };
 
 export type CategoryField = {
@@ -65,5 +72,13 @@ export type TransactionForm = {
   id: string;
   category_id: string;
   amount: number;
-  status: 'pending' | 'paid';
+  status: 'pending' | 'paid'; // Keeping temporarily to avoid break in edit form before I update it, but plan is to remove. 
+  // Wait, if I remove it from DB, I should remove it here.
+  // actually, let's remove it. I will fix the form in the same 'Turn' or subsequent steps.
+};
+// Redefining TransactionForm to NOT have status
+export type TransactionFormClean = {
+  id: string;
+  category_id: string;
+  amount: number;
 };
