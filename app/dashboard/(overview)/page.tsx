@@ -26,7 +26,9 @@ export default async function Page(props: {
         <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
           Dashboard
         </h1>
-        <MonthSelector />
+        <Suspense fallback={<div>Loading...</div>}>
+          <MonthSelector />
+        </Suspense>
       </div>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Suspense key={month + year + 'cards'} fallback={<CardsSkeleton />}>
