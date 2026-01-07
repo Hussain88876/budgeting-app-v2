@@ -10,14 +10,13 @@ import {
   CardsSkeleton,
 } from '@/app/ui/skeletons';
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: {
+export default async function Page(props: {
+  searchParams?: Promise<{
     month?: string;
     year?: string;
-  };
+  }>;
 }) {
+  const searchParams = await props.searchParams;
   const month = searchParams?.month || '01';
   const year = searchParams?.year || '2026';
 
