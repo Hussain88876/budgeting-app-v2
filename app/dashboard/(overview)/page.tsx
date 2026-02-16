@@ -17,8 +17,9 @@ export default async function Page(props: {
   }>;
 }) {
   const searchParams = await props.searchParams;
-  const month = searchParams?.month || '01';
-  const year = searchParams?.year || '2026';
+  const now = new Date();
+  const month = searchParams?.month || String(now.getMonth() + 1).padStart(2, '0');
+  const year = searchParams?.year || String(now.getFullYear());
 
   return (
     <main>

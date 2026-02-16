@@ -13,6 +13,7 @@ import { useActionState } from 'react';
 export default function Form({ categories }: { categories: CategoryField[] }) {
   const initialState: State = { message: null, errors: {} };
   const [state, dispatch] = useActionState(createTransaction as any, initialState);
+  const today = new Date().toLocaleDateString('en-CA');
 
   return (
     <form action={dispatch}>
@@ -78,6 +79,24 @@ export default function Form({ categories }: { categories: CategoryField[] }) {
                 </p>
               ))}
           </div>
+        </div>
+
+        {/* Date */}
+        <div className="mb-4">
+          <label htmlFor="date" className="mb-2 block text-sm font-medium">
+            Date
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <input
+              id="date"
+              name="date"
+              type="date"
+              defaultValue={today}
+              className="peer block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
+              aria-describedby="date-error"
+            />
+          </div>
+          <div id="date-error" aria-live="polite" aria-atomic="true"></div>
         </div>
 
         {/* Removed Status Field */}

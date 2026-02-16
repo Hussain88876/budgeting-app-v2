@@ -1,15 +1,39 @@
 'use client';
 
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { useMemo } from 'react';
+
+const MONTH_NAMES = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+/** Generate the last `count` months starting from today (most recent first). */
+function generateMonthOptions(count = 12) {
+    const now = new Date();
+    const options: { value: string; label: string }[] = [];
+    for (let i = 0; i < count; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const yyyy = String(d.getFullYear());
+        options.push({
+            value: `${mm}-${yyyy}`,
+            label: `${MONTH_NAMES[d.getMonth()]} ${yyyy}`,
+        });
+    }
+    return options;
+}
 
 export default function MonthSelector() {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    // Default to January 2026 if not specified
-    const currentMonth = searchParams.get('month') || '01';
-    const currentYear = searchParams.get('year') || '2026';
+    const options = useMemo(() => generateMonthOptions(12), []);
+
+    // Default to the current month/year (first option)
+    const currentMonth = searchParams.get('month') || options[0].value.split('-')[0];
+    const currentYear = searchParams.get('year') || options[0].value.split('-')[1];
 
     const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const [month, year] = e.target.value.split('-');
@@ -35,9 +59,11 @@ export default function MonthSelector() {
                 value={`${currentMonth}-${currentYear}`}
                 onChange={handleMonthChange}
             >
-                <option value="01-2026">January 2026</option>
-                <option value="12-2025">December 2025</option>
-                <option value="11-2025">November 2025</option>
+                {options.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                    </option>
+                ))}
             </select>
         </div>
     );

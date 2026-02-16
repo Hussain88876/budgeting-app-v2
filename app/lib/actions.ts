@@ -28,12 +28,13 @@ export type State = {
   message?: string | null;
 };
 
-const CreateTransaction = FormSchema.omit({ id: true, date: true });
+const CreateTransaction = FormSchema.omit({ id: true });
 
 export async function createTransaction(prevState: State, formData: FormData) {
   const validatedFields = CreateTransaction.safeParse({
     categoryId: formData.get('categoryId'),
     amount: formData.get('amount'),
+    date: formData.get('date') ?? undefined,
   });
 
   if (!validatedFields.success) {
@@ -43,10 +44,13 @@ export async function createTransaction(prevState: State, formData: FormData) {
     };
   }
 
-  const { categoryId, amount } = validatedFields.data;
+  const { categoryId, amount, date: providedDate } = validatedFields.data;
 
   const amountInCents = amount * 100;
-  const date = new Date().toISOString().split('T')[0];
+  // Prefer the client-provided date (local) when available, otherwise fall back to server UTC date
+  const date = providedDate || new Date().toISOString().split('T')[0];
+  // Extract year and month for redirecting back to the transactions list
+  const [createdYear, createdMonth] = date.split('-');
 
   try {
     // Removed status from INSERT
@@ -61,8 +65,9 @@ export async function createTransaction(prevState: State, formData: FormData) {
     };
   }
 
-  revalidatePath('/dashboard/transactions');
-  redirect('/dashboard/transactions');
+  // Revalidate the transactions page (including query params) and redirect
+  revalidatePath(`/dashboard/transactions?month=${createdMonth}&year=${createdYear}`);
+  redirect(`/dashboard/transactions?month=${createdMonth}&year=${createdYear}`);
 }
 
 const UpdateTransaction = FormSchema.omit({ id: true, date: true });
