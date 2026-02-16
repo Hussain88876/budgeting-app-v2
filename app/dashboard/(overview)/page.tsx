@@ -2,6 +2,7 @@ import CardWrapper from '@/app/ui/dashboard/cards';
 import ExpensesChart from '@/app/ui/dashboard/expenses-chart'; // New Pie Chart
 import RecentTransactions from '@/app/ui/dashboard/latest-invoices'; // Renamed component inside? No, file is still latest-invoices.tsx. I should check/update it.
 import MonthSelector from '@/app/ui/dashboard/month-selector';
+import { fetchAvailableMonths } from '@/app/lib/data';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import {
@@ -21,6 +22,8 @@ export default async function Page(props: {
   const month = searchParams?.month || String(now.getMonth() + 1).padStart(2, '0');
   const year = searchParams?.year || String(now.getFullYear());
 
+  const availableMonths = await fetchAvailableMonths();
+
   return (
     <main>
       <div className="flex w-full items-center justify-between">
@@ -28,7 +31,7 @@ export default async function Page(props: {
           Dashboard
         </h1>
         <Suspense fallback={<div>Loading...</div>}>
-          <MonthSelector />
+          <MonthSelector availableMonths={availableMonths} />
         </Suspense>
       </div>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

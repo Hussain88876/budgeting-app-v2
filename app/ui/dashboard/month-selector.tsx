@@ -1,39 +1,28 @@
 'use client';
 
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { useMemo } from 'react';
 
 const MONTH_NAMES = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
-/** Generate the last `count` months starting from today (most recent first). */
-function generateMonthOptions(count = 12) {
-    const now = new Date();
-    const options: { value: string; label: string }[] = [];
-    for (let i = 0; i < count; i++) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const yyyy = String(d.getFullYear());
-        options.push({
-            value: `${mm}-${yyyy}`,
-            label: `${MONTH_NAMES[d.getMonth()]} ${yyyy}`,
-        });
-    }
-    return options;
+interface MonthOption {
+    month: string; // "01"–"12"
+    year: string;  // "2026"
 }
 
-export default function MonthSelector() {
+export default function MonthSelector({ availableMonths }: { availableMonths: MonthOption[] }) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    const options = useMemo(() => generateMonthOptions(12), []);
+    // Default to the first (most recent) available month
+    const defaultMonth = availableMonths[0]?.month ?? String(new Date().getMonth() + 1).padStart(2, '0');
+    const defaultYear = availableMonths[0]?.year ?? String(new Date().getFullYear());
 
-    // Default to the current month/year (first option)
-    const currentMonth = searchParams.get('month') || options[0].value.split('-')[0];
-    const currentYear = searchParams.get('year') || options[0].value.split('-')[1];
+    const currentMonth = searchParams.get('month') || defaultMonth;
+    const currentYear = searchParams.get('year') || defaultYear;
 
     const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const [month, year] = e.target.value.split('-');
@@ -59,9 +48,9 @@ export default function MonthSelector() {
                 value={`${currentMonth}-${currentYear}`}
                 onChange={handleMonthChange}
             >
-                {options.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                        {opt.label}
+                {availableMonths.map((opt) => (
+                    <option key={`${opt.month}-${opt.year}`} value={`${opt.month}-${opt.year}`}>
+                        {MONTH_NAMES[parseInt(opt.month, 10) - 1]} {opt.year}
                     </option>
                 ))}
             </select>

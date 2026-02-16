@@ -7,6 +7,7 @@ import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchTransactionsPages } from '@/app/lib/data';
 import MonthSelector from '@/app/ui/dashboard/month-selector';
+import { fetchAvailableMonths } from '@/app/lib/data';
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -24,13 +25,14 @@ export default async function Page(props: {
   const year = searchParams?.year || String(now.getFullYear());
 
   const totalPages = await fetchTransactionsPages(query, month, year);
+  const availableMonths = await fetchAvailableMonths();
 
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
         <h1 className={`${lusitana.className} text-2xl`}>Transactions</h1>
         <Suspense fallback={<div>Loading...</div>}>
-          <MonthSelector />
+          <MonthSelector availableMonths={availableMonths} />
         </Suspense>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">

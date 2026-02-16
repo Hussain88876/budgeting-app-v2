@@ -240,3 +240,36 @@ export async function fetchIncomeById(id: string) {
     throw new Error('Failed to fetch income.');
   }
 }
+
+/**
+ * Return distinct month/year combos that have at least one transaction or income entry,
+ * sorted most-recent first. Always includes the current month so it's selectable even
+ * before any data exists for it.
+ */
+export async function fetchAvailableMonths(): Promise<{ month: string; year: string }[]> {
+  try {
+    const data = await sql<{ mm: string; yyyy: string }>`
+      SELECT DISTINCT mm, yyyy FROM (
+        SELECT to_char(date, 'MM') AS mm, to_char(date, 'YYYY') AS yyyy FROM transactions
+        UNION
+        SELECT to_char(date, 'MM') AS mm, to_char(date, 'YYYY') AS yyyy FROM income
+      ) AS months
+      ORDER BY yyyy DESC, mm DESC
+    `;
+
+    const rows = data.rows.map((r) => ({ month: r.mm, year: r.yyyy }));
+
+    // Ensure the current month is always present
+    const now = new Date();
+    const curMonth = String(now.getMonth() + 1).padStart(2, '0');
+    const curYear = String(now.getFullYear());
+    if (!rows.some((r) => r.month === curMonth && r.year === curYear)) {
+      rows.unshift({ month: curMonth, year: curYear });
+    }
+
+    return rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch available months.');
+  }
+}
